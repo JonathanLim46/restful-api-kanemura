@@ -18,7 +18,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping(
-            path = "/api/auth/login",
+            path = "/api/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @DeleteMapping(
-            path = "/api/auth/logout",
+            path = "/api/logout",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> logout(User user){

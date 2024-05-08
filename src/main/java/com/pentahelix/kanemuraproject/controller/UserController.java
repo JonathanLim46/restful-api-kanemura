@@ -18,7 +18,7 @@ public class UserController {
 
 
     @PostMapping(
-            path="/api/users",
+            path="/api/auth/users",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
