@@ -1,14 +1,14 @@
 package com.pentahelix.kanemuraproject.controller;
 
 import com.pentahelix.kanemuraproject.entity.User;
-import com.pentahelix.kanemuraproject.model.RegisterUserRequest;
-import com.pentahelix.kanemuraproject.model.UpdateUserRequest;
-import com.pentahelix.kanemuraproject.model.UserResponse;
-import com.pentahelix.kanemuraproject.model.WebResponse;
+import com.pentahelix.kanemuraproject.model.*;
 import com.pentahelix.kanemuraproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -48,5 +48,31 @@ public class UserController {
     public WebResponse<UserResponse> update(User user, @RequestBody UpdateUserRequest request){
         UserResponse userResponse = userService.update(user, request);
         return WebResponse.<UserResponse>builder().data(userResponse).build();
+    }
+
+    @GetMapping(
+            path = "/api/users",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<List<UserResponse>> getData(@RequestParam(value = "username", required = false) String username,
+                                                  @RequestParam(value = "name", required = false) String name,
+                                                  @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                  @RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
+        SearchUserRequest request = SearchUserRequest.builder()
+                .page(page)
+                .size(size)
+                .username(username)
+                .name(name)
+                .build();
+
+        Page<UserResponse> userResponses = userService.getData(request);
+        return WebResponse.<List<UserResponse>>builder()
+                .data(userResponses.getContent())
+                .paging(PagingResponse.builder()
+                        .currentPage(userResponses.getNumber())
+                        .totalPage(userResponses.getTotalPages())
+                        .size(userResponses.getSize())
+                        .build())
+                .build();
     }
 }

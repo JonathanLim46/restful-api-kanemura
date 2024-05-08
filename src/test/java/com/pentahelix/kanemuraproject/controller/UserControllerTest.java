@@ -2,11 +2,9 @@ package com.pentahelix.kanemuraproject.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pentahelix.kanemuraproject.entity.Menu;
 import com.pentahelix.kanemuraproject.entity.User;
-import com.pentahelix.kanemuraproject.model.RegisterUserRequest;
-import com.pentahelix.kanemuraproject.model.UpdateUserRequest;
-import com.pentahelix.kanemuraproject.model.UserResponse;
-import com.pentahelix.kanemuraproject.model.WebResponse;
+import com.pentahelix.kanemuraproject.model.*;
 import com.pentahelix.kanemuraproject.repository.UserRepository;
 import com.pentahelix.kanemuraproject.security.BCrypt;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -269,5 +269,23 @@ class UserControllerTest {
         });
     }
 
+    @Test
+    void getDataNotFound() throws Exception{
 
+        mockMvc.perform(
+                get("/api/users")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<UserResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals(0,response.getData().size());
+            assertEquals(0,response.getPaging().getTotalPage());
+            assertEquals(0,response.getPaging().getCurrentPage());
+            assertEquals(10,response.getPaging().getSize());
+        });
+    }
 }
