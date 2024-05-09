@@ -273,7 +273,7 @@ class UserControllerTest {
     void getDataNotFound() throws Exception{
 
         mockMvc.perform(
-                get("/api/users")
+                get("/api/auth/users")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpectAll(

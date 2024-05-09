@@ -101,7 +101,7 @@ public class UserService{
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public Page<UserResponse> getData(SearchUserRequest request){
+    public Page<UserResponse> getData(User user,SearchUserRequest request){
         Specification<User> specification = (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if(Objects.nonNull(request.getUsername())){

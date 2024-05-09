@@ -51,10 +51,10 @@ public class UserController {
     }
 
     @GetMapping(
-            path = "/api/users",
+            path = "/api/auth/users",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<List<UserResponse>> getData(@RequestParam(value = "username", required = false) String username,
+    public WebResponse<List<UserResponse>> getData(User user,@RequestParam(value = "username", required = false) String username,
                                                   @RequestParam(value = "name", required = false) String name,
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
@@ -65,7 +65,7 @@ public class UserController {
                 .name(name)
                 .build();
 
-        Page<UserResponse> userResponses = userService.getData(request);
+        Page<UserResponse> userResponses = userService.getData(user,request);
         return WebResponse.<List<UserResponse>>builder()
                 .data(userResponses.getContent())
                 .paging(PagingResponse.builder()
