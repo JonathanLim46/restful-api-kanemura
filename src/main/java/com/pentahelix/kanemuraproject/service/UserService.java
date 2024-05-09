@@ -123,4 +123,12 @@ public class UserService{
 
         return new PageImpl<>(userResponse,pageable,users.getTotalElements());
     }
+
+    @Transactional
+    public void delete(String username){
+        User user = findUserRepository.findFirstByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+
+        findUserRepository.delete(user);
+    }
 }

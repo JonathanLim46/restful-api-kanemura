@@ -75,4 +75,12 @@ public class UserController {
                         .build())
                 .build();
     }
+    @DeleteMapping(
+            path = "/api/auth/users/{username}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<String> delete(User user,@PathVariable("username") String username){
+        userService.delete(username);
+        return WebResponse.<String>builder().data("OK").build();
+    }
 }
