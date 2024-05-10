@@ -5,7 +5,9 @@ import com.pentahelix.kanemuraproject.model.*;
 import com.pentahelix.kanemuraproject.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,9 +55,14 @@ public class MenuController {
             path = "/api/auth/menus/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<String> delete(User user,@PathVariable("id") Integer id){
-        menuService.delete(user,id);
-        return WebResponse.<String>builder().data("OK").build();
+    public ResponseEntity<?> deleteMenu(User user,@PathVariable Integer id) {
+        try {
+            menuService.deleteMenuAndRelatedImage(user,id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete menu: " + e.getMessage());
+        }
     }
 
     @GetMapping(

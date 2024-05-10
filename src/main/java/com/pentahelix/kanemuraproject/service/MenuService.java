@@ -1,11 +1,13 @@
 package com.pentahelix.kanemuraproject.service;
 
+import com.pentahelix.kanemuraproject.entity.FileData;
 import com.pentahelix.kanemuraproject.entity.Menu;
 import com.pentahelix.kanemuraproject.entity.User;
 import com.pentahelix.kanemuraproject.model.CreateMenuRequest;
 import com.pentahelix.kanemuraproject.model.MenuResponse;
 import com.pentahelix.kanemuraproject.model.SearchMenuRequest;
 import com.pentahelix.kanemuraproject.model.UpdateMenuRequest;
+import com.pentahelix.kanemuraproject.repository.FileDataRepository;
 import com.pentahelix.kanemuraproject.repository.MenuRepository;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
@@ -19,15 +21,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class MenuService {
 
     @Autowired
     private MenuRepository menuRepository;
+
+    @Autowired
+    private FileDataRepository fileDataRepository;
 
     @Autowired
     private ValidationService validationService;
@@ -86,11 +94,17 @@ public class MenuService {
     }
 
     @Transactional
-    public void delete(User user,Integer id){
-        Menu menu = menuRepository.findFirstById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
+    public void deleteMenuAndRelatedImage(User user, Integer id) throws Exception{
+        Optional<FileData> fileDataOptional = fileDataRepository.findByMenuId(id);
+        if (fileDataOptional.isPresent()) {
+            FileData fileData = fileDataOptional.get();
+            Files.deleteIfExists(Paths.get(fileData.getFilepath()));
+            fileDataRepository.delete(fileData);
+        }
+    }
 
-        menuRepository.delete(menu);
+    public void deleteMenu(Integer id) {
+        menuRepository.deleteById(id);
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
