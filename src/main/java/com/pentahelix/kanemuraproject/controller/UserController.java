@@ -42,7 +42,7 @@ public class UserController {
     @PatchMapping(
             path="/api/users/current",
             consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8"
     )
 //    Response update user
     public WebResponse<UserResponse> update(User user, @RequestBody UpdateUserRequest request){
