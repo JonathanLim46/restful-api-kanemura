@@ -31,4 +31,6 @@ public class Menu {
 
     private boolean signature;
 
+    @OneToOne(mappedBy = "menu")
+    private FileData fileData;
 }

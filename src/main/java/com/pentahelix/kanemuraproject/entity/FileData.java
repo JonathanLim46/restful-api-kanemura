@@ -23,4 +23,8 @@ public class FileData {
     private String type;
 
     private String filepath;
+
+    @OneToOne
+    @JoinColumn(name = "menu_id", referencedColumnName = "id_menu")
+    private Menu menu;
 }

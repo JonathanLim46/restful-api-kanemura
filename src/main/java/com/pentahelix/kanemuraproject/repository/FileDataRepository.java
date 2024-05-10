@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface FileDataRepository extends JpaRepository<FileData,Integer> {
     Optional<FileData> findByNameImg(String name_img);
+
+    Optional<FileData> findByMenuId(Integer menu_id);
 }

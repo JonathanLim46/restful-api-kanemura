@@ -19,8 +19,8 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/fileSystem")
-    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image")MultipartFile file) throws IOException {
-        String uploadImage = imageService.uploadImageToFileSystem(file);
+    public ResponseEntity<?> uploadImageToFIleSystem(Integer menu_id,@RequestParam("image")MultipartFile file) throws IOException {
+        String uploadImage = imageService.uploadImageToFileSystem(file, menu_id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
@@ -28,6 +28,15 @@ public class ImageController {
     @GetMapping("/fileSystem/{fileName}")
     public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileName) throws IOException {
         byte[] imageData=imageService.downloadImageFromFileSystem(fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+
+    }
+
+    @GetMapping("/fileSystem/images/{menu_id}")
+    public ResponseEntity<?> getImageByMenuId(@PathVariable Integer menu_id) throws IOException {
+        byte[] imageData=imageService.getImageByMenuId(menu_id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
