@@ -39,7 +39,7 @@ public class UserController {
         return WebResponse.<UserResponse>builder().data(userResponse).build();
     }
 
-    @PatchMapping(
+    @PutMapping(
             path="/api/users/current",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8"
