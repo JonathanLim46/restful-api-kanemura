@@ -30,7 +30,7 @@ public class AuthService {
         validationService.validate(request);
 
         User user = userRepository.findById(request.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid credentials"));
         if(BCrypt.checkpw(request.getPassword(), user.getPassword())){
             user.setToken(UUID.randomUUID().toString());
             user.setTokenExpiredAt(next30Days());
@@ -41,7 +41,7 @@ public class AuthService {
                     .expiredAt(user.getTokenExpiredAt())
                     .build();
         }else{
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credentials");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid credentials");
         }
 
     }
