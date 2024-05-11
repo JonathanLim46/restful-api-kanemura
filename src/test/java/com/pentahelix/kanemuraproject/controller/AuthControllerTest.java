@@ -50,13 +50,13 @@ class AuthControllerTest {
 
 
         mockMvc.perform(
-                post("/api/auth/login")
+                post("/api/login")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
 
         ).andExpectAll(
-                status().isUnauthorized()
+                status().isBadRequest()
 
         ).andDo(result -> {
             WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -80,13 +80,13 @@ class AuthControllerTest {
 
 
         mockMvc.perform(
-                post("/api/auth/login")
+                post("/api/login")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
 
         ).andExpectAll(
-                status().isUnauthorized()
+                status().isBadRequest()
 
         ).andDo(result -> {
             WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -110,7 +110,7 @@ class AuthControllerTest {
 
 
         mockMvc.perform(
-                post("/api/auth/login")
+                post("/api/login")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -135,7 +135,7 @@ class AuthControllerTest {
     @Test
     void logoutFailed() throws Exception{
         mockMvc.perform(
-                delete("/api/auth/logout")
+                delete("/api/logout")
                         .accept(MediaType.APPLICATION_JSON)
         ).andExpectAll(
                 status().isUnauthorized()
@@ -158,7 +158,7 @@ class AuthControllerTest {
 
 
         mockMvc.perform(
-                delete("/api/auth/logout")
+                delete("/api/logout")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "test")
         ).andExpectAll(
