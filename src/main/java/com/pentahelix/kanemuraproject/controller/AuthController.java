@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @DeleteMapping(
-            path = "/api/logout",
+            path = "/api/auth/logout",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> logout(User user){
