@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin
 public class AuthController {
 
 
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @DeleteMapping(
-            path = "/api/auth/logout",
+            path = "/api/logout",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> logout(User user){
