@@ -19,8 +19,8 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/fileSystem")
-    public ResponseEntity<?> uploadImageToFIleSystem(Integer menu_id,@RequestParam("image")MultipartFile file) throws IOException {
-        String uploadImage = imageService.updateImageToFileSystem(file, menu_id);
+    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image")MultipartFile file, Integer id) throws IOException {
+        String uploadImage = imageService.updateImageToFileSystem(file,id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }

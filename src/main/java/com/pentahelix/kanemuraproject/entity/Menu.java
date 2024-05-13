@@ -1,10 +1,7 @@
 package com.pentahelix.kanemuraproject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "menu")
+@Builder
 public class Menu {
 
     @Id
@@ -20,17 +18,21 @@ public class Menu {
     private Integer id;
 
     @Column(name = "nama_menu")
-    private String nama_menu;
+    private String namaMenu;
 
     @Column(name = "description")
     private String description;
 
     private Integer harga;
 
-    private String kategori;
+    private Integer kategori;
 
     private boolean signature;
 
-    @OneToOne(mappedBy = "menu")
-    private FileData fileData;
+    @Column(name = "nama_img")
+    private String nameImg;
+
+    private String type;
+
+    private String filepath;
 }

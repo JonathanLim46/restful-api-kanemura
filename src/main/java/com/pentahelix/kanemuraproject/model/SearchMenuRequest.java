@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SearchMenuRequest {
 
-    private String nama_menu;
+    private String namaMenu;
 
     private String description;
 
-    private String kategori;
+    private Integer kategori;
 
     private Integer harga;
 

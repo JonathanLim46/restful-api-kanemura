@@ -14,13 +14,13 @@ public class MenuResponse {
 
     private Integer id;
 
-    private String nama_menu;
+    private String namaMenu;
 
     private String description;
 
     private Integer harga;
 
-    private String kategori;
+    private Integer kategori;
 
     private boolean signature;
 

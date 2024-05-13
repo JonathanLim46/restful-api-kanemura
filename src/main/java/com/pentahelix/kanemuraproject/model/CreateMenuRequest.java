@@ -16,15 +16,14 @@ public class CreateMenuRequest {
 
     @NotBlank
     @Size(max = 100)
-    private String nama_menu;
+    private String namaMenu;
 
     @Size(max = 500)
     private String description;
 
     private Integer harga;
 
-    @Size(max = 100)
-    private String kategori;
+    private Integer kategori;
 
     private boolean signature;
 
