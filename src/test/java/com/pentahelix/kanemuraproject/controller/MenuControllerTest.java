@@ -59,7 +59,7 @@ class MenuControllerTest {
     @Test
     void createMenuBadRequest() throws Exception{
         CreateMenuRequest request = new CreateMenuRequest();
-        request.setNama_menu("");
+        request.setNamaMenu("");
         request.setDescription("");
 
         mockMvc.perform(
@@ -82,10 +82,10 @@ class MenuControllerTest {
     void createMenuSuccess() throws Exception{
         CreateMenuRequest request = new CreateMenuRequest();
 
-        request.setNama_menu("Ramen");
+        request.setNamaMenu("Ramen");
         request.setDescription("Makanan Mie Jepang");
         request.setHarga(15000);
-        request.setKategori("Ramen");
+        request.setKategori(1);
         request.setSignature(true);
 
         mockMvc.perform(
@@ -102,8 +102,8 @@ class MenuControllerTest {
             assertNull(response.getErrors());
             assertEquals("Makanan Mie Jepang", response.getData().getDescription());
             assertEquals(15000,response.getData().getHarga());
-            assertEquals("Ramen",response.getData().getKategori());
-            assertEquals("Ramen",response.getData().getNama_menu());
+            assertEquals(1,response.getData().getKategori());
+            assertEquals("Ramen",response.getData().getNamaMenu());
             assertTrue(response.getData().isSignature());
 
 
@@ -132,8 +132,8 @@ class MenuControllerTest {
     void getMenuSuccess() throws Exception{
 
         Menu menu = new Menu();
-        menu.setNama_menu("Ramen Gyoza");
-        menu.setKategori("Ramen");
+        menu.setNamaMenu("Ramen Gyoza");
+        menu.setKategori(1);
         menu.setDescription("Kuah Gulai Sapi");
         menu.setHarga(15000);
         menuRepository.save(menu);
@@ -152,7 +152,7 @@ class MenuControllerTest {
             assertEquals(menu.getDescription(), response.getData().getDescription());
             assertEquals(menu.getHarga(),response.getData().getHarga());
             assertEquals(menu.getKategori(),response.getData().getKategori());
-            assertEquals(menu.getNama_menu(),response.getData().getNama_menu());
+            assertEquals(menu.getNamaMenu(),response.getData().getNamaMenu());
 
         });
     }

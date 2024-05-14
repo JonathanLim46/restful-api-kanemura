@@ -25,8 +25,6 @@ public class Menu {
 
     private Integer harga;
 
-    private Integer kategori;
-
     private boolean signature;
 
     @Column(name = "nama_img")
@@ -35,4 +33,8 @@ public class Menu {
     private String type;
 
     private String filepath;
+
+    @ManyToOne
+    @JoinColumn(name = "kategori",referencedColumnName = "id_kategori")
+    private Kategori kategori;
 }

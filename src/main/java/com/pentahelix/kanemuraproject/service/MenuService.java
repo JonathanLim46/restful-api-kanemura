@@ -1,12 +1,16 @@
 package com.pentahelix.kanemuraproject.service;
 
+import com.pentahelix.kanemuraproject.entity.Kategori;
 import com.pentahelix.kanemuraproject.entity.Menu;
 import com.pentahelix.kanemuraproject.entity.User;
 import com.pentahelix.kanemuraproject.model.CreateMenuRequest;
 import com.pentahelix.kanemuraproject.model.MenuResponse;
 import com.pentahelix.kanemuraproject.model.SearchMenuRequest;
 import com.pentahelix.kanemuraproject.model.UpdateMenuRequest;
+import com.pentahelix.kanemuraproject.repository.KategoriRepository;
 import com.pentahelix.kanemuraproject.repository.MenuRepository;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,9 @@ public class MenuService {
     private MenuRepository menuRepository;
 
     @Autowired
+    private KategoriRepository kategoriRepository;
+
+    @Autowired
     private ImageService imageService;
 
     @Autowired
@@ -55,58 +62,75 @@ public class MenuService {
         menu.setNamaMenu(request.getNamaMenu());
         menu.setDescription(request.getDescription());
         menu.setHarga(request.getHarga());
-        menu.setKategori(request.getKategori());
         menu.setSignature(request.isSignature());
 
+        Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
+                .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
+
+        menu.setKategori(kategori);
 
         menuRepository.save(menu);
 
-        return toMenuResponse(menu);
+        menu = menuRepository.findFirstById(menu.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Failed to create menu"));
+
+
+        return toMenuResponse(menu,kategori);
     }
 
 
-
-    private MenuResponse toMenuResponse(Menu menu){
+    private MenuResponse toMenuResponse(Menu menu, Kategori kategori){
         return MenuResponse.builder()
                 .id(menu.getId())
                 .namaMenu(menu.getNamaMenu())
                 .description(menu.getDescription())
                 .harga(menu.getHarga())
-                .kategori(menu.getKategori())
+                .kategori(kategori.getIdKategori())
+                .nama_kategori(kategori.getNama_kategori())
                 .signature(menu.isSignature())
                 .build();
     }
+
+
 
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public MenuResponse get(Integer id){
         Menu menu = menuRepository.findFirstById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
-        return toMenuResponse(menu);
+
+        Kategori kategori = menu.getKategori();
+
+        return toMenuResponse(menu,kategori);
     }
 
     @Transactional
-    public MenuResponse update(User user,UpdateMenuRequest request){
+    public MenuResponse update(User user, UpdateMenuRequest request){
         validationService.validate(request);
 
         Menu menu = menuRepository.findFirstById(request.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
         menu.setNamaMenu(request.getNamaMenu());
-        menu.setKategori(request.getKategori());
         menu.setDescription(request.getDescription());
         menu.setHarga(request.getHarga());
         menu.setSignature(request.isSignature());
+
+        Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
+                .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
+
+        menu.setKategori(kategori);
+
         menuRepository.save(menu);
 
-        return toMenuResponse(menu);
+        return toMenuResponse(menu, kategori);
     }
 
     @Transactional
     public void delete(User user, Integer id) {
-        Menu contact = menuRepository.findFirstById(id)
+        Menu menu = menuRepository.findFirstById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu not found"));
 
-        menuRepository.delete(contact);
+        menuRepository.delete(menu);
     }
 
 
@@ -121,10 +145,11 @@ public class MenuService {
                 predicates.add(builder.like(root.get("description"), "%" + request.getDescription() + "%"));
             }
             if(Objects.nonNull(request.getKategori())){
-                predicates.add(builder.like(root.get("kategori"), "%" + request.getKategori() + "%"));
+                Join<Menu, Kategori> kategoriJoin = root.join("kategori", JoinType.LEFT);
+                predicates.add(builder.equal(kategoriJoin.get("id_kategori"), request.getKategori()));
             }
             if(Objects.nonNull(request.getHarga())){
-                predicates.add(builder.like(root.get("harga"), "%" + request.getHarga() + "%"));
+                predicates.add(builder.like(root.get("harga").as(String.class), "%" + request.getHarga() + "%"));
             }
             if (Objects.nonNull(request.isSignature())) {
                 if (request.isSignature()) {
@@ -137,17 +162,17 @@ public class MenuService {
                 }
             }
 
-
-
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
 
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
         Page<Menu> menus = menuRepository.findAll(specification, pageable);
         List<MenuResponse> menuResponses = menus.getContent().stream()
-                .map(this::toMenuResponse)
+                .map(menu -> toMenuResponse(menu, menu.getKategori()))
                 .toList();
 
-        return new PageImpl<>(menuResponses,pageable,menus.getTotalElements());
+        return new PageImpl<>(menuResponses, pageable, menus.getTotalElements());
     }
+
+
 }

@@ -1,29 +1,19 @@
 package com.pentahelix.kanemuraproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuResponse {
+@Builder
+public class UpdateKategoriRequest {
 
-
-    private Integer id;
-
-    private String namaMenu;
-
-    private String description;
-
-    private Integer harga;
-
-    private Integer kategori;
-
-    private boolean signature;
+    @JsonIgnore
+    private Integer idKategori;
 
     private String nama_kategori;
-
 }
