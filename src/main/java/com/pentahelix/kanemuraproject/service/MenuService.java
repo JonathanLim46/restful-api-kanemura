@@ -88,6 +88,7 @@ public class MenuService {
                 .kategori(kategori.getIdKategori())
                 .nama_kategori(kategori.getNama_kategori())
                 .signature(menu.isSignature())
+                .filepath(menu.getFilepath())
                 .build();
     }
 
@@ -150,6 +151,9 @@ public class MenuService {
             }
             if(Objects.nonNull(request.getHarga())){
                 predicates.add(builder.like(root.get("harga").as(String.class), "%" + request.getHarga() + "%"));
+            }
+            if(Objects.nonNull(request.getFilepath())){
+                predicates.add(builder.like(root.get("filepath"), "%" + request.getFilepath() + "%"));
             }
             if (Objects.nonNull(request.isSignature())) {
                 if (request.isSignature()) {

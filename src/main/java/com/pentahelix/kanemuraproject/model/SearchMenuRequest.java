@@ -20,6 +20,8 @@ public class SearchMenuRequest {
 
     private Integer harga;
 
+    private String filepath;
+
     @NotNull
     private Integer page;
 

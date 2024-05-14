@@ -26,4 +26,6 @@ public class MenuResponse {
 
     private String nama_kategori;
 
+    private String filepath;
+
 }
