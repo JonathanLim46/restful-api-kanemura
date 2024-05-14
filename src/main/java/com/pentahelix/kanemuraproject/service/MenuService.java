@@ -146,8 +146,8 @@ public class MenuService {
                 predicates.add(builder.like(root.get("description"), "%" + request.getDescription() + "%"));
             }
             if(Objects.nonNull(request.getKategori())){
-                Join<Menu, Kategori> kategoriJoin = root.join("kategori", JoinType.LEFT);
-                predicates.add(builder.equal(kategoriJoin.get("id_kategori"), request.getKategori()));
+                Join<Menu, Kategori> kategoriJoin = root.join("kategori", JoinType.INNER);
+                predicates.add(builder.equal(kategoriJoin.get("idKategori"), request.getKategori()));
             }
             if(Objects.nonNull(request.getHarga())){
                 predicates.add(builder.like(root.get("harga").as(String.class), "%" + request.getHarga() + "%"));
