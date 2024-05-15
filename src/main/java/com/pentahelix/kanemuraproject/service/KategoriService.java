@@ -30,6 +30,7 @@ public class KategoriService {
     @Autowired
     private ValidationService validationService;
 
+//    CREATE KATEGORI
     @Transactional
     public KategoriResponse create(User user, CreateKategoriRequest request){
         validationService.validate(request);
@@ -44,7 +45,7 @@ public class KategoriService {
         return toKategoriResponse(kategori);
     }
 
-
+//      KATEGORI RESPONSE
     private KategoriResponse toKategoriResponse(Kategori kategori){
         return KategoriResponse.builder()
                 .idKategori(kategori.getIdKategori())
@@ -52,6 +53,7 @@ public class KategoriService {
                 .build();
     }
 
+//    GET KATEGORI BERDASARKAN ID KATEGORI
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public KategoriResponse get(Integer idKategori){
         Kategori kategori = kategoriRepository.findFirstByIdKategori(idKategori)
@@ -59,10 +61,12 @@ public class KategoriService {
         return toKategoriResponse(kategori);
     }
 
+//    UPDATE KATEGORI
     @Transactional
     public KategoriResponse update(User user, UpdateKategoriRequest request){
         validationService.validate(request);
 
+//        CHECK ID KATEGORI
         Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getIdKategori())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Kategori Not Found"));
         kategori.setNama_kategori(request.getNama_kategori());
@@ -72,6 +76,7 @@ public class KategoriService {
         return toKategoriResponse(kategori);
     }
 
+//    DELETE KATEGORI
     @Transactional
     public void delete(User user, Integer idKategori) {
         Kategori kategori = kategoriRepository.findFirstByIdKategori(idKategori)
@@ -80,6 +85,7 @@ public class KategoriService {
         kategoriRepository.delete(kategori);
     }
 
+//    GET ALL KATEGORI
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<KategoriResponse> search(SearchKategoriRequest request){
         Specification<Menu> specification = (root, query, builder) -> {

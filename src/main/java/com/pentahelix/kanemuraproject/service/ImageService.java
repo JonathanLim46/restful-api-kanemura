@@ -20,13 +20,18 @@ public class ImageService {
     @Autowired
     private MenuRepository menuRepository;
 
+//    GET BASE FOLDER PATH
     private final String BASE_FOLDER_PATH = Paths.get("src/main/resources/").toAbsolutePath().toString();
+
+//    IMAGES DEFAULT FOLDER DI DATABASE
     private final String IMAGES_FOLDER = "images/";
 
+//    UPLOAD IMAGE
     public String updateImageToFileSystem(User user, MultipartFile file, Integer id) throws IOException {
         String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
         String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
 
+//        CARI MENU DENGAN ID MENU
         Menu existingMenu = menuRepository.findFirstById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Menu dengan id " + id + " tidak ditemukan"));
 
@@ -36,6 +41,7 @@ public class ImageService {
 
         menuRepository.save(existingMenu);
 
+//        CHECK FOLDER
         File directory = new File(BASE_FOLDER_PATH + File.separator + IMAGES_FOLDER);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -46,8 +52,11 @@ public class ImageService {
         return "File berhasil terupload dengan id menu :  " + id;
     }
 
+//    GET IMAGE DARI DIRECTORY
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
+//        CARI IMAGE DENGAN NAMA FILE
         Optional<Menu> fileData = menuRepository.findByNameImg(fileName);
+//        GET IMAGE GABUNGAN BASE FOLDER + RELATIVE PATH
         if (fileData.isPresent()) {
             String relativeFilePath = fileData.get().getFilepath();
             String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
@@ -57,6 +66,7 @@ public class ImageService {
         }
     }
 
+//    GET IMAGE DENGAN ID MENU
     public byte[] getImageByMenuId(Integer menu_id) throws IOException {
         Optional<Menu> fileDataOptional = menuRepository.findFirstById(menu_id);
         if (fileDataOptional.isPresent()) {

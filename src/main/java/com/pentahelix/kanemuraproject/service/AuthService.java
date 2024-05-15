@@ -46,12 +46,12 @@ public class AuthService {
 
     }
 
-
-
+//    Token set selama 30 hari
     private Long next30Days() {
         return System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30);
     }
 
+//    Logout user dengan token null
     @Transactional
     public void logout(User user){
         user.setToken(null);

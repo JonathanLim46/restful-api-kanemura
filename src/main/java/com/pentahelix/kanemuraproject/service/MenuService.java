@@ -50,7 +50,7 @@ public class MenuService {
     private ValidationService validationService;
 
 
-
+// Create Menu Service
     @Transactional
     public MenuResponse create(User user, CreateMenuRequest request){
         validationService.validate(request);
@@ -62,13 +62,16 @@ public class MenuService {
         menu.setHarga(request.getHarga());
         menu.setSignature(request.isSignature());
 
+//        Cari Kategori dengan id kategori
         Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
                 .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
 
         menu.setKategori(kategori);
 
+//        simpan ke database
         menuRepository.save(menu);
 
+//        throw id menu yang sudah terbuat untuk disimpan ke menu response
         menu = menuRepository.findFirstById(menu.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Failed to create menu"));
 
@@ -76,7 +79,7 @@ public class MenuService {
         return toMenuResponse(menu,kategori);
     }
 
-
+//    MenuResponse
     private MenuResponse toMenuResponse(Menu menu, Kategori kategori){
         return MenuResponse.builder()
                 .id(menu.getId())
@@ -91,8 +94,7 @@ public class MenuService {
     }
 
 
-
-
+//    Get Menu By Id Service
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public MenuResponse get(Integer id){
         Menu menu = menuRepository.findFirstById(id)
@@ -103,6 +105,7 @@ public class MenuService {
         return toMenuResponse(menu,kategori);
     }
 
+//    Update Menu Service
     @Transactional
     public MenuResponse update(User user, UpdateMenuRequest request){
         validationService.validate(request);
@@ -114,6 +117,7 @@ public class MenuService {
         menu.setHarga(request.getHarga());
         menu.setSignature(request.isSignature());
 
+//        Kategori dari table kategori dengan id kategori
         Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
                 .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
 
@@ -124,15 +128,17 @@ public class MenuService {
         return toMenuResponse(menu, kategori);
     }
 
+//    Delete Menu Service
     @Transactional
     public void delete(User user, Integer id) {
+//        Cari data menu berdasarkan id
         Menu menu = menuRepository.findFirstById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu not found"));
 
         menuRepository.delete(menu);
     }
 
-
+//     Search Menu Service
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<MenuResponse> search(SearchMenuRequest request){
         Specification<Menu> specification = (root, query, builder) -> {
