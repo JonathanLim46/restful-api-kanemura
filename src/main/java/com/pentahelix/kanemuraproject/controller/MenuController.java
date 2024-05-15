@@ -80,7 +80,7 @@ public class MenuController {
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
                                                   @RequestParam(value="signature",required = false) boolean signature,
-                                                  @RequestParam(value = "filepath",required = false) String filepath){
+                                                  @RequestParam(value = "nama_img",required = false) String nama_img){
         SearchMenuRequest request = SearchMenuRequest.builder()
                 .page(page)
                 .size(size)
@@ -89,7 +89,7 @@ public class MenuController {
                 .kategori(kategori)
                 .harga(harga)
                 .signature(signature)
-                .filepath(filepath)
+                .nama_img(nama_img)
                 .build();
 
         Page<MenuResponse> menuResponses = menuService.search(request);

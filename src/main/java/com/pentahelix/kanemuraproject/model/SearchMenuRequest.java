@@ -20,7 +20,7 @@ public class SearchMenuRequest {
 
     private Integer harga;
 
-    private String filepath;
+    private String nama_img;
 
     @NotNull
     private Integer page;

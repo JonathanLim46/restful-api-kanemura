@@ -1,9 +1,9 @@
 package com.pentahelix.kanemuraproject.service;
 
 import com.pentahelix.kanemuraproject.entity.Menu;
+import com.pentahelix.kanemuraproject.entity.User;
 import com.pentahelix.kanemuraproject.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @Service
@@ -19,46 +20,52 @@ public class ImageService {
     @Autowired
     private MenuRepository menuRepository;
 
-    @Value("${spring.servlet.multipart.location}")
-    private String FOLDER_PATH;
+    private final String BASE_FOLDER_PATH = Paths.get("src/main/resources/").toAbsolutePath().toString();
+    private final String IMAGES_FOLDER = "images/";
 
-    public String updateImageToFileSystem(MultipartFile file, Integer id) throws IOException {
-        String filePath = FOLDER_PATH + file.getOriginalFilename();
+    public String updateImageToFileSystem(User user, MultipartFile file, Integer id) throws IOException {
+        String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
+        String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
 
         Menu existingMenu = menuRepository.findFirstById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Menu with id " + id + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Menu dengan id " + id + " tidak ditemukan"));
 
         existingMenu.setNameImg(file.getOriginalFilename());
         existingMenu.setType(file.getContentType());
-        existingMenu.setFilepath(filePath);
+        existingMenu.setFilepath(relativeFilePath);
 
         menuRepository.save(existingMenu);
 
+        File directory = new File(BASE_FOLDER_PATH + File.separator + IMAGES_FOLDER);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
         file.transferTo(new File(filePath));
 
-        return "File updated successfully and associated with menu ID: " + id;
+        return "File berhasil terupload dengan id menu :  " + id;
     }
-
 
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
         Optional<Menu> fileData = menuRepository.findByNameImg(fileName);
-        String filePath=fileData.get().getFilepath();
-        byte[] images = Files.readAllBytes(new File(filePath).toPath());
-        return images;
+        if (fileData.isPresent()) {
+            String relativeFilePath = fileData.get().getFilepath();
+            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
+            return Files.readAllBytes(new File(filePath).toPath());
+        } else {
+            throw new FileNotFoundException("Gambar tidak ditemukan : " + fileName);
+        }
     }
 
     public byte[] getImageByMenuId(Integer menu_id) throws IOException {
         Optional<Menu> fileDataOptional = menuRepository.findFirstById(menu_id);
         if (fileDataOptional.isPresent()) {
             Menu fileData = fileDataOptional.get();
-            String filePath = fileData.getFilepath();
+            String relativeFilePath = fileData.getFilepath();
+            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
             return Files.readAllBytes(new File(filePath).toPath());
         } else {
-            throw new FileNotFoundException("Image not found for menu ID: " + menu_id);
+            throw new FileNotFoundException("Gambar tidak ditemukan dengan id menu : "  + menu_id);
         }
     }
-
-
-
-
 }

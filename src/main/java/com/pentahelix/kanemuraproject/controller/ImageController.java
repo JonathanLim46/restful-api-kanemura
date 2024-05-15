@@ -1,5 +1,6 @@
 package com.pentahelix.kanemuraproject.controller;
 
+import com.pentahelix.kanemuraproject.entity.User;
 import com.pentahelix.kanemuraproject.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/fileSystem")
-    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image")MultipartFile file, Integer id) throws IOException {
-        String uploadImage = imageService.updateImageToFileSystem(file,id);
+    public ResponseEntity<?> uploadImageToFIleSystem(User user, @RequestParam("image")MultipartFile file, Integer id) throws IOException {
+        String uploadImage = imageService.updateImageToFileSystem(user,file,id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }

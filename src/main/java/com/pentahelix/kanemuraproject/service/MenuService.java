@@ -49,8 +49,6 @@ public class MenuService {
     @Autowired
     private ValidationService validationService;
 
-    @Value("${spring.servlet.multipart.location}")
-    private String FOLDER_PATH;
 
 
     @Transactional
@@ -88,7 +86,7 @@ public class MenuService {
                 .kategori(kategori.getIdKategori())
                 .nama_kategori(kategori.getNama_kategori())
                 .signature(menu.isSignature())
-                .filepath(menu.getFilepath())
+                .nama_img(menu.getNameImg())
                 .build();
     }
 
@@ -152,8 +150,8 @@ public class MenuService {
             if(Objects.nonNull(request.getHarga())){
                 predicates.add(builder.like(root.get("harga").as(String.class), "%" + request.getHarga() + "%"));
             }
-            if(Objects.nonNull(request.getFilepath())){
-                predicates.add(builder.like(root.get("filepath"), "%" + request.getFilepath() + "%"));
+            if(Objects.nonNull(request.getNama_img())){
+                predicates.add(builder.like(root.get("nama_img"), "%" + request.getNama_img() + "%"));
             }
             if (Objects.nonNull(request.isSignature())) {
                 if (request.isSignature()) {
