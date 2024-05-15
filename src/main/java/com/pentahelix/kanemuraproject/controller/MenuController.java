@@ -79,8 +79,8 @@ public class MenuController {
                                                   @RequestParam(value = "harga", required = false) Integer harga,
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
-                                                  @RequestParam(value="signature",required = false) boolean signature,
-                                                  @RequestParam(value = "nama_img",required = false) String nama_img){
+                                                  @RequestParam(value = "nama_img",required = false) String nama_img,
+                                                  @RequestParam(value = "signature",required = false) Boolean signature){
         SearchMenuRequest request = SearchMenuRequest.builder()
                 .page(page)
                 .size(size)
@@ -88,8 +88,8 @@ public class MenuController {
                 .description(description)
                 .kategori(kategori)
                 .harga(harga)
-                .signature(signature)
                 .nama_img(nama_img)
+                .signature(signature)
                 .build();
 
         Page<MenuResponse> menuResponses = menuService.search(request);
@@ -102,4 +102,7 @@ public class MenuController {
                         .build())
                 .build();
     }
+
+
+
 }

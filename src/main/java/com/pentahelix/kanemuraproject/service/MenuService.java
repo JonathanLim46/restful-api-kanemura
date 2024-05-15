@@ -1,144 +1,145 @@
-package com.pentahelix.kanemuraproject.service;
+    package com.pentahelix.kanemuraproject.service;
 
-import com.pentahelix.kanemuraproject.entity.Kategori;
-import com.pentahelix.kanemuraproject.entity.Menu;
-import com.pentahelix.kanemuraproject.entity.User;
-import com.pentahelix.kanemuraproject.model.CreateMenuRequest;
-import com.pentahelix.kanemuraproject.model.MenuResponse;
-import com.pentahelix.kanemuraproject.model.SearchMenuRequest;
-import com.pentahelix.kanemuraproject.model.UpdateMenuRequest;
-import com.pentahelix.kanemuraproject.repository.KategoriRepository;
-import com.pentahelix.kanemuraproject.repository.MenuRepository;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+    import com.pentahelix.kanemuraproject.entity.Kategori;
+    import com.pentahelix.kanemuraproject.entity.Menu;
+    import com.pentahelix.kanemuraproject.entity.User;
+    import com.pentahelix.kanemuraproject.model.CreateMenuRequest;
+    import com.pentahelix.kanemuraproject.model.MenuResponse;
+    import com.pentahelix.kanemuraproject.model.SearchMenuRequest;
+    import com.pentahelix.kanemuraproject.model.UpdateMenuRequest;
+    import com.pentahelix.kanemuraproject.repository.KategoriRepository;
+    import com.pentahelix.kanemuraproject.repository.MenuRepository;
+    import jakarta.persistence.criteria.Join;
+    import jakarta.persistence.criteria.JoinType;
+    import jakarta.persistence.criteria.Predicate;
+    import jakarta.transaction.Transactional;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.beans.factory.annotation.Value;
+    import org.springframework.data.domain.Page;
+    import org.springframework.data.domain.PageImpl;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
+    import org.springframework.data.jpa.domain.Specification;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.stereotype.Service;
+    import org.springframework.web.multipart.MultipartFile;
+    import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+    import java.io.File;
+    import java.io.IOException;
+    import java.nio.file.Files;
+    import java.nio.file.Paths;
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Objects;
+    import java.util.Optional;
 
-@Service
-public class MenuService {
+    @Service
+    public class MenuService {
 
-    @Autowired
-    private MenuRepository menuRepository;
+        @Autowired
+        private MenuRepository menuRepository;
 
-    @Autowired
-    private KategoriRepository kategoriRepository;
+        @Autowired
+        private KategoriRepository kategoriRepository;
 
-    @Autowired
-    private ImageService imageService;
+        @Autowired
+        private ImageService imageService;
 
-    @Autowired
-    private ValidationService validationService;
-
-
-// Create Menu Service
-    @Transactional
-    public MenuResponse create(User user, CreateMenuRequest request){
-        validationService.validate(request);
-
-        Menu menu = new Menu();
-
-        menu.setNamaMenu(request.getNamaMenu());
-        menu.setDescription(request.getDescription());
-        menu.setHarga(request.getHarga());
-        menu.setSignature(request.isSignature());
-
-//        Cari Kategori dengan id kategori
-        Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
-                .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
-
-        menu.setKategori(kategori);
-
-//        simpan ke database
-        menuRepository.save(menu);
-
-//        throw id menu yang sudah terbuat untuk disimpan ke menu response
-        menu = menuRepository.findFirstById(menu.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Failed to create menu"));
+        @Autowired
+        private ValidationService validationService;
 
 
-        return toMenuResponse(menu,kategori);
-    }
+    // Create Menu Service
+        @Transactional
+        public MenuResponse create(User user, CreateMenuRequest request){
+            validationService.validate(request);
 
-//    MenuResponse
-    private MenuResponse toMenuResponse(Menu menu, Kategori kategori){
-        return MenuResponse.builder()
-                .id(menu.getId())
-                .namaMenu(menu.getNamaMenu())
-                .description(menu.getDescription())
-                .harga(menu.getHarga())
-                .kategori(kategori.getIdKategori())
-                .nama_kategori(kategori.getNama_kategori())
-                .signature(menu.isSignature())
-                .nama_img(menu.getNameImg())
-                .build();
-    }
+            Menu menu = new Menu();
+
+            menu.setNamaMenu(request.getNamaMenu());
+            menu.setDescription(request.getDescription());
+            menu.setHarga(request.getHarga());
+            menu.setSignature(request.isSignature());
+
+    //        Cari Kategori dengan id kategori
+            Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
+                    .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
+
+            menu.setKategori(kategori);
+
+    //        simpan ke database
+            menuRepository.save(menu);
+
+    //        throw id menu yang sudah terbuat untuk disimpan ke menu response
+            menu = menuRepository.findFirstById(menu.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Failed to create menu"));
 
 
-//    Get Menu By Id Service
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public MenuResponse get(Integer id){
-        Menu menu = menuRepository.findFirstById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
+            return toMenuResponse(menu,kategori);
+        }
 
-        Kategori kategori = menu.getKategori();
+    //    MenuResponse
+        private MenuResponse toMenuResponse(Menu menu, Kategori kategori){
+            return MenuResponse.builder()
+                    .id(menu.getId())
+                    .namaMenu(menu.getNamaMenu())
+                    .description(menu.getDescription())
+                    .harga(menu.getHarga())
+                    .kategori(kategori.getIdKategori())
+                    .nama_kategori(kategori.getNama_kategori())
+                    .signature(menu.isSignature())
+                    .nama_img(menu.getNameImg())
+                    .build();
+        }
 
-        return toMenuResponse(menu,kategori);
-    }
 
-//    Update Menu Service
-    @Transactional
-    public MenuResponse update(User user, UpdateMenuRequest request){
-        validationService.validate(request);
 
-        Menu menu = menuRepository.findFirstById(request.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
-        menu.setNamaMenu(request.getNamaMenu());
-        menu.setDescription(request.getDescription());
-        menu.setHarga(request.getHarga());
-        menu.setSignature(request.isSignature());
+    //    Get Menu By Id Service
+        @org.springframework.transaction.annotation.Transactional(readOnly = true)
+        public MenuResponse get(Integer id){
+            Menu menu = menuRepository.findFirstById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
 
-//        Kategori dari table kategori dengan id kategori
-        Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
-                .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
+            Kategori kategori = menu.getKategori();
 
-        menu.setKategori(kategori);
+            return toMenuResponse(menu,kategori);
+        }
 
-        menuRepository.save(menu);
+    //    Update Menu Service
+        @Transactional
+        public MenuResponse update(User user, UpdateMenuRequest request){
+            validationService.validate(request);
 
-        return toMenuResponse(menu, kategori);
-    }
+            Menu menu = menuRepository.findFirstById(request.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
+            menu.setNamaMenu(request.getNamaMenu());
+            menu.setDescription(request.getDescription());
+            menu.setHarga(request.getHarga());
+            menu.setSignature(request.isSignature());
 
-//    Delete Menu Service
-    @Transactional
-    public void delete(User user, Integer id) {
-//        Cari data menu berdasarkan id
-        Menu menu = menuRepository.findFirstById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu not found"));
+    //        Kategori dari table kategori dengan id kategori
+            Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
+                    .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
 
-        menuRepository.delete(menu);
-    }
+            menu.setKategori(kategori);
 
-//     Search Menu Service
+            menuRepository.save(menu);
+
+            return toMenuResponse(menu, kategori);
+        }
+
+    //    Delete Menu Service
+        @Transactional
+        public void delete(User user, Integer id) {
+    //        Cari data menu berdasarkan id
+            Menu menu = menuRepository.findFirstById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu not found"));
+
+            menuRepository.delete(menu);
+        }
+
+    //     Search Menu Service
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<MenuResponse> search(SearchMenuRequest request){
         Specification<Menu> specification = (root, query, builder) -> {
@@ -159,17 +160,10 @@ public class MenuService {
             if(Objects.nonNull(request.getNama_img())){
                 predicates.add(builder.like(root.get("nama_img"), "%" + request.getNama_img() + "%"));
             }
-            if (Objects.nonNull(request.isSignature())) {
-                if (request.isSignature()) {
-                    predicates.add(builder.isTrue(root.get("signature")));
-                } else {
-                    predicates.add(builder.or(
-                            builder.isFalse(root.get("signature")),
-                            builder.isNull(root.get("signature"))
-                    ));
-                }
-            }
+            if (Objects.nonNull(request.getSignature())) {
+                predicates.add(builder.equal(root.get("signature"), request.getSignature()));
 
+            }
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
 
@@ -180,7 +174,9 @@ public class MenuService {
                 .toList();
 
         return new PageImpl<>(menuResponses, pageable, menus.getTotalElements());
+
+        }
+
+
+
     }
-
-
-}
