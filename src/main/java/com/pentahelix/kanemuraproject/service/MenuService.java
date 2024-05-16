@@ -49,11 +49,20 @@
         @Autowired
         private ValidationService validationService;
 
+        //    GET BASE FOLDER PATH
+        private final String BASE_FOLDER_PATH = Paths.get("src/main/resources/").toAbsolutePath().toString();
+
+        //    IMAGES DEFAULT FOLDER DI DATABASE
+        private final String IMAGES_FOLDER = "images/";
+
 
     // Create Menu Service
         @Transactional
-        public MenuResponse create(User user, CreateMenuRequest request){
+        public MenuResponse create(User user, CreateMenuRequest request, MultipartFile file) throws IOException {
             validationService.validate(request);
+
+            String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
+            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
 
             Menu menu = new Menu();
 
@@ -61,6 +70,9 @@
             menu.setDescription(request.getDescription());
             menu.setHarga(request.getHarga());
             menu.setSignature(request.isSignature());
+            menu.setType(file.getContentType());
+            menu.setFilepath(relativeFilePath);
+            menu.setNameImg(file.getOriginalFilename());
 
     //        Cari Kategori dengan id kategori
             Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
@@ -68,8 +80,17 @@
 
             menu.setKategori(kategori);
 
+
     //        simpan ke database
             menuRepository.save(menu);
+
+            //        CHECK FOLDER
+            File directory = new File(BASE_FOLDER_PATH + File.separator + IMAGES_FOLDER);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            file.transferTo(new File(filePath));
 
     //        throw id menu yang sudah terbuat untuk disimpan ke menu response
             menu = menuRepository.findFirstById(menu.getId())

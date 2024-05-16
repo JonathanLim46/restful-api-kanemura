@@ -29,11 +29,11 @@ public class MenuController {
 
     @PostMapping(
             path = "/api/auth/menus",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<MenuResponse> create(User user, @RequestBody CreateMenuRequest request){
-        MenuResponse menuResponse = menuService.create(user, request);
+    public WebResponse<MenuResponse> create(User user, @RequestPart("request") CreateMenuRequest request, @RequestParam("image") MultipartFile file) throws Exception{
+        MenuResponse menuResponse = menuService.create(user, request,file);
         return WebResponse.<MenuResponse>builder().data(menuResponse).build();
     }
 
