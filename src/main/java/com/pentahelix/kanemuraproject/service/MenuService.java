@@ -58,24 +58,22 @@
 
     // Create Menu Service
         @Transactional
-        public MenuResponse create(User user, CreateMenuRequest request, MultipartFile file) throws IOException {
-            validationService.validate(request);
-
+        public MenuResponse create(User user, String namaMenu, String description, Integer harga, Integer idkategori, MultipartFile file) throws IOException {
             String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
             String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
 
             Menu menu = new Menu();
 
-            menu.setNamaMenu(request.getNamaMenu());
-            menu.setDescription(request.getDescription());
-            menu.setHarga(request.getHarga());
-            menu.setSignature(request.isSignature());
+            menu.setNamaMenu(namaMenu);
+            menu.setDescription(description);
+            menu.setHarga(harga);
+            menu.setSignature(menu.isSignature());
             menu.setType(file.getContentType());
             menu.setFilepath(relativeFilePath);
             menu.setNameImg(file.getOriginalFilename());
 
     //        Cari Kategori dengan id kategori
-            Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
+            Kategori kategori = kategoriRepository.findFirstByIdKategori(idkategori)
                     .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
 
             menu.setKategori(kategori);

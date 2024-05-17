@@ -1,7 +1,7 @@
 # ADMIN API SPEC
 
 ## Register Admin
-- Endpoint : POST /api/users
+- Endpoint : POST /api/auth/users
 
 Request Body : 
 
@@ -25,12 +25,20 @@ Response Body (Failed) :
 
 ```json
 {
-  "errors" : "Username must not blank, ???"
+  "errors" : "Username must not blank"
+}
+```
+
+Response Body (Failed) :
+
+```json
+{
+  "errors" : "Username already registered"
 }
 ```
 
 ## Login Admin
-- Endpoint : POST /api/auth/login
+- Endpoint : POST /api/login
 
 Request Body :
 
@@ -47,7 +55,7 @@ Response Body (Success) :
 {
   "data" : {
     "token" : "TOKEN",
-    "expiredAt" : 23423432423423 // milliseconds
+    "expiredAt" : 23423432423423 // milliseconds & 30 days expired
   }
 }
 ```
@@ -56,7 +64,7 @@ Response Body (Failed) :
 
 ```json
 {
-  "errors" : "Username or Password Wrong, ???"
+  "errors" : "invalid credentials"
 }
 ```
 
@@ -64,6 +72,32 @@ Response Body (Failed) :
 - Endpoint : GET /api/users/current
 
 Request Header : 
+
+- X-API-TOKEN : Token (Mandatory)
+
+Response Body (Success) :
+
+```json
+{
+  "data" : {
+    "username" : "Mawar",
+    "name" : "Mawar Yemima"
+  }
+}
+```
+
+Response Body (Failed, 401) :
+
+```json
+{
+  "errors" : "Unauthorized"
+}
+```
+
+## Get All User
+- Endpoint : GET /api/auth/users/
+
+Request Header :
 
 - X-API-TOKEN : Token (Mandatory)
 
