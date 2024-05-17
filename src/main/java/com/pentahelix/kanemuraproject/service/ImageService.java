@@ -4,8 +4,10 @@ import com.pentahelix.kanemuraproject.entity.Menu;
 import com.pentahelix.kanemuraproject.entity.User;
 import com.pentahelix.kanemuraproject.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,7 +64,7 @@ public class ImageService {
             String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
             return Files.readAllBytes(new File(filePath).toPath());
         } else {
-            throw new FileNotFoundException("Gambar tidak ditemukan : " + fileName);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Gambar tidak ditemukan : " + fileName);
         }
     }
 
@@ -75,7 +77,7 @@ public class ImageService {
             String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
             return Files.readAllBytes(new File(filePath).toPath());
         } else {
-            throw new FileNotFoundException("Gambar tidak ditemukan dengan id menu : "  + menu_id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Gambar tidak ditemukan dengan id menu : "  + menu_id);
         }
     }
 }

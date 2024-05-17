@@ -105,9 +105,16 @@ Response Body (Success) :
 
 ```json
 {
-  "data" : {
-    "username" : "Mawar",
-    "name" : "Mawar Yemima"
+  "data": [
+    {
+      "username": "mawar",
+      "name": "mawar putri"
+    }
+  ],
+  "paging" : {
+    "currentPage" : 0,
+    "totalPage" : 10,
+    "size" : 10
   }
 }
 ```
@@ -121,7 +128,7 @@ Response Body (Failed, 401) :
 ```
 
 ## UPDATE ADMIN
-- Endpoint : PATCH /api/users/current
+- Endpoint : PUT /api/users/current
 
 Request Header :
 

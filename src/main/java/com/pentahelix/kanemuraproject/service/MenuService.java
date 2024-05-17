@@ -74,7 +74,7 @@
 
     //        Cari Kategori dengan id kategori
             Kategori kategori = kategoriRepository.findFirstByIdKategori(idkategori)
-                    .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Kategori Tidak Ditemukan"));
 
             menu.setKategori(kategori);
 
@@ -92,7 +92,7 @@
 
     //        throw id menu yang sudah terbuat untuk disimpan ke menu response
             menu = menuRepository.findFirstById(menu.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Failed to create menu"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Gagal Membuat Menu"));
 
 
             return toMenuResponse(menu,kategori);
@@ -118,7 +118,7 @@
         @org.springframework.transaction.annotation.Transactional(readOnly = true)
         public MenuResponse get(Integer id){
             Menu menu = menuRepository.findFirstById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu tidak Ditemukan"));
 
             Kategori kategori = menu.getKategori();
 
@@ -131,7 +131,7 @@
             validationService.validate(request);
 
             Menu menu = menuRepository.findFirstById(request.getId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Not Found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Tidak Ditemukan"));
             menu.setNamaMenu(request.getNamaMenu());
             menu.setDescription(request.getDescription());
             menu.setHarga(request.getHarga());
@@ -139,7 +139,7 @@
 
     //        Kategori dari table kategori dengan id kategori
             Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
-                    .orElseThrow(() -> new IllegalArgumentException("Kategori Tidak Ditemukan"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Kategori Tidak Ditemukan"));
 
             menu.setKategori(kategori);
 
@@ -153,7 +153,7 @@
         public void delete(User user, Integer id) {
     //        Cari data menu berdasarkan id
             Menu menu = menuRepository.findFirstById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Tidak Ditemukan"));
 
             menuRepository.delete(menu);
         }
