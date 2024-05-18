@@ -127,23 +127,25 @@
 
     //    Update Menu Service
         @Transactional
-        public MenuResponse update(User user, UpdateMenuRequest request){
-            validationService.validate(request);
+        public MenuResponse update(User user, String namaMenu, String description, Integer harga, Integer idkategori, Boolean signature, Integer id) throws IOException {
 
-            Menu menu = menuRepository.findFirstById(request.getId())
+
+            Menu menu = menuRepository.findFirstById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu Tidak Ditemukan"));
-            menu.setNamaMenu(request.getNamaMenu());
-            menu.setDescription(request.getDescription());
-            menu.setHarga(request.getHarga());
-            menu.setSignature(request.isSignature());
+            menu.setNamaMenu(namaMenu);
+            menu.setDescription(description);
+            menu.setHarga(harga);
+            menu.setSignature(signature);
+
 
     //        Kategori dari table kategori dengan id kategori
-            Kategori kategori = kategoriRepository.findFirstByIdKategori(request.getKategori())
+            Kategori kategori = kategoriRepository.findFirstByIdKategori(idkategori)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Kategori Tidak Ditemukan"));
 
             menu.setKategori(kategori);
 
             menuRepository.save(menu);
+
 
             return toMenuResponse(menu, kategori);
         }

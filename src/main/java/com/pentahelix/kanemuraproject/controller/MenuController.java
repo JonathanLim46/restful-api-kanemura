@@ -50,13 +50,11 @@ public class MenuController {
 
     @PutMapping(
             path = "/api/auth/menus/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<MenuResponse> update(User user,@RequestBody UpdateMenuRequest request, @PathVariable("id") Integer idMenu){
-
-        request.setId(idMenu);
-        MenuResponse menuResponse = menuService.update(user,request);
+    public WebResponse<MenuResponse> update(User user,@RequestParam("namaMenu") String namaMenu, @RequestParam("description") String description, @RequestParam("harga") Integer harga, @RequestParam("idkategori") Integer idkategori, @RequestParam("signature") Boolean signature, @PathVariable("id") Integer id) throws IOException {
+        MenuResponse menuResponse = menuService.update(user,namaMenu,description,harga,idkategori,signature,id);
         return WebResponse.<MenuResponse>builder().data(menuResponse).build();
     }
 
