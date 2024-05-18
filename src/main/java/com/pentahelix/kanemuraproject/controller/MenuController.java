@@ -90,14 +90,9 @@ public class MenuController {
                 .signature(signature)
                 .build();
 
-        Page<MenuResponse> menuResponses = menuService.search(request);
+        List<MenuResponse> menuResponses = menuService.search(request);
         return WebResponse.<List<MenuResponse>>builder()
-                .data(menuResponses.getContent())
-                .paging(PagingResponse.builder()
-                        .currentPage(menuResponses.getNumber())
-                        .totalPage(menuResponses.getTotalPages())
-                        .size(menuResponses.getSize())
-                        .build())
+                .data(menuResponses)
                 .build();
     }
 

@@ -162,7 +162,7 @@
 
     //     Search Menu Service
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public Page<MenuResponse> search(SearchMenuRequest request){
+    public List<MenuResponse> search(SearchMenuRequest request){
         Specification<Menu> specification = (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if(Objects.nonNull(request.getNamaMenu())){
@@ -188,13 +188,10 @@
             return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
         };
 
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
-        Page<Menu> menus = menuRepository.findAll(specification, pageable);
-        List<MenuResponse> menuResponses = menus.getContent().stream()
+        List<Menu> menus = menuRepository.findAll(specification);
+        return menus.stream()
                 .map(menu -> toMenuResponse(menu, menu.getKategori()))
                 .toList();
-
-        return new PageImpl<>(menuResponses, pageable, menus.getTotalElements());
 
         }
 
