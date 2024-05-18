@@ -17,8 +17,8 @@ multipart/form-data
     description : "Kuah Gulai",
     harga : 15000,
     idKategori : 1,
-    image : imagefile
-
+    image : imagefile,
+    signature : true
 }
 
 Response Body (Success) : 
@@ -30,7 +30,7 @@ Response Body (Success) :
     "description" : "Kuah Gulai",
     "harga" : "15000",
     "kategori" : "1",
-    "signature" : false,
+    "signature" : true,
     "nama_kategori" : "name_kategori_from_id",
     "nama_img" : "image_file_name.filetype"
   } 

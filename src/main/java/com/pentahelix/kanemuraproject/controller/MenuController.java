@@ -32,8 +32,8 @@ public class MenuController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public WebResponse<MenuResponse> create(User user, @RequestParam("namaMenu") String namaMenu, @RequestParam("description") String description, @RequestParam("harga") Integer harga, @RequestParam("idkategori") Integer idkategori, @RequestParam("image") MultipartFile file) throws Exception{
-        MenuResponse menuResponse = menuService.create(user, namaMenu, description, harga, idkategori,file);
+    public WebResponse<MenuResponse> create(User user, @RequestParam("namaMenu") String namaMenu, @RequestParam("description") String description, @RequestParam("harga") Integer harga, @RequestParam("idkategori") Integer idkategori, @RequestParam("signature") Boolean signature, @RequestParam("image") MultipartFile file) throws Exception{
+        MenuResponse menuResponse = menuService.create(user, namaMenu, description, harga, idkategori, signature,file);
         return WebResponse.<MenuResponse>builder().data(menuResponse).build();
     }
 

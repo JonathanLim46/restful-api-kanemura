@@ -58,7 +58,7 @@
 
     // Create Menu Service
         @Transactional
-        public MenuResponse create(User user, String namaMenu, String description, Integer harga, Integer idkategori, MultipartFile file) throws IOException {
+        public MenuResponse create(User user, String namaMenu, String description, Integer harga, Integer idkategori, Boolean signature,MultipartFile file) throws IOException {
             String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
             String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
 
@@ -67,7 +67,7 @@
             menu.setNamaMenu(namaMenu);
             menu.setDescription(description);
             menu.setHarga(harga);
-            menu.setSignature(menu.isSignature());
+            menu.setSignature(signature);
             menu.setType(file.getContentType());
             menu.setFilepath(relativeFilePath);
             menu.setNameImg(file.getOriginalFilename());
