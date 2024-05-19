@@ -13,20 +13,19 @@ import java.io.IOException;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/image")
 public class ImageController {
 
     @Autowired
     private ImageService imageService;
 
-    @PostMapping("/fileSystem")
+    @PostMapping("/api/auth/image/fileSystem")
     public ResponseEntity<?> uploadImageToFIleSystem(User user, @RequestParam("image")MultipartFile file, Integer id) throws IOException {
         String uploadImage = imageService.updateImageToFileSystem(user,file,id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
-    @GetMapping("/fileSystem/{fileName}")
+    @GetMapping("/api/image/fileSystem/{fileName}")
     public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileName) throws IOException {
         byte[] imageData=imageService.downloadImageFromFileSystem(fileName);
         return ResponseEntity.status(HttpStatus.OK)
@@ -35,7 +34,7 @@ public class ImageController {
 
     }
 
-    @GetMapping("/fileSystem/images/{menu_id}")
+    @GetMapping("/api/image/fileSystem/images/{menu_id}")
     public ResponseEntity<?> getImageByMenuId(@PathVariable Integer menu_id) throws IOException {
         byte[] imageData=imageService.getImageByMenuId(menu_id);
         return ResponseEntity.status(HttpStatus.OK)
