@@ -4,10 +4,10 @@ COPY . .
 RUN mvn clean install
 
 #
-Package stage
+# Package stage
 #
 FROM eclipse-temurin:21-jdk
 COPY --from=build /target/kanemura-project-0.0.1-SNAPSHOT.jar kanemura-project.jar
-ENV PORT=8080
+# ENV PORT=8080
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","kanemura-project.jar"]
