@@ -1,8 +1,13 @@
-FROM jelastic/maven:3.9.5-openjdk-21 AS build
+#
+FROM maven:4.0.0-openjdk-21 AS build
 COPY . .
-RUN mvn clean package   -DskipTests
+RUN mvn clean install
 
-FROM openjdk:21-slim
-COPY --from=build /target/kanemuraproject-3.2.5.jar kanemuraproject.jar
+#
+Package stage
+#
+FROM eclipse-temurin:21-jdk
+COPY --from=build /target/kanemura-project-0.0.1-SNAPSHOT.jar kanemura-project.jar
+ENV PORT=8080
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","kanemuraproject.jar"]
+ENTRYPOINT ["java","-jar","kanemura-project.jar"]
