@@ -1,5 +1,5 @@
 #
-FROM maven:4.0.0-openjdk-21 AS build
+FROM jelastic/maven:3.9.5-openjdk-21 AS build
 COPY . .
 RUN mvn clean install
 
