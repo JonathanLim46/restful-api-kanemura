@@ -25,9 +25,9 @@ public class ImageController {
                 .body(uploadImage);
     }
 
-    @GetMapping("/api/image/fileSystem/{fileName}")
-    public ResponseEntity<?> downloadImageFromFileSystem(@PathVariable String fileName) throws IOException {
-        byte[] imageData=imageService.downloadImageFromFileSystem(fileName);
+    @GetMapping("/api/image/fileSystem/images/{Filename}")
+    public ResponseEntity<?> getImageByFileName(@PathVariable String Filename) throws IOException {
+        byte[] imageData=imageService.getImageByFileName(Filename);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);

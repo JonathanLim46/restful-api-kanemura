@@ -54,19 +54,17 @@ public class ImageService {
     }
 
 //    GET IMAGE DARI DIRECTORY
-    public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
-//        CARI IMAGE DENGAN NAMA FILE
-        List<Menu> fileDataList = menuRepository.findByNameImg(fileName);
-        if(fileDataList.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Gambar tidak ditemukan : " + fileName);
-        }
-//        GET IMAGE GABUNGAN BASE FOLDER + RELATIVE PATH
-        Menu fileDataGet = fileDataList.getFirst();
-        String relativeFilePath = fileDataGet.getFilepath();
-        String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
-        return Files.readAllBytes(new File(filePath).toPath());
-
+    public byte[] getImageByFileName(String Filename) throws IOException {
+        Optional<Menu> fileDataOptional = menuRepository.findByNameImg(Filename);
+        if (fileDataOptional.isPresent()) {
+            Menu fileData = fileDataOptional.get();
+            String relativeFilePath = fileData.getFilepath();
+            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
+            return Files.readAllBytes(new File(filePath).toPath());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Gambar tidak ditemukan dengan id menu : "  + Filename);
     }
+}
 
 //    GET IMAGE DENGAN ID MENU
     public byte[] getImageByMenuId(Integer menu_id) throws IOException {

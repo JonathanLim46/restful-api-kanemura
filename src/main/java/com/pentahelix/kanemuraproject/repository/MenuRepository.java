@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface MenuRepository extends JpaRepository<Menu, Integer>, JpaSpecificationExecutor<Menu> {
     Optional<Menu> findFirstById(Integer id);
 
-    List<Menu> findByNameImg(String nameImg);
+    Optional<Menu> findByNameImg(String nameImg);
 }
