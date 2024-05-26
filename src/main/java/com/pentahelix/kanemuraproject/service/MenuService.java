@@ -49,16 +49,14 @@
         @Autowired
         private ValidationService validationService;
 
-        private final String BASE_FOLDER_PATH = Paths.get("").toAbsolutePath().toString();
-
-        private final String IMAGES_FOLDER = Paths.get(BASE_FOLDER_PATH, "src", "main", "resources", "images").toString();
-
+        @Value("${images.folder}")
+        private String imagesFolder;
 
     // Create Menu Service
         @Transactional
         public MenuResponse create(User user, String namaMenu, String description, Integer harga, Integer idkategori, Boolean signature,MultipartFile file) throws IOException {
-            String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
-            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
+//            String relativeFilePath = IMAGES_FOLDER + file.getOriginalFilename();
+//            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
 
             Menu menu = new Menu();
 
@@ -67,6 +65,8 @@
             menu.setHarga(harga);
             menu.setSignature(signature);
             menu.setType(file.getContentType());
+
+            String relativeFilePath = file.getOriginalFilename();
             menu.setFilepath(relativeFilePath);
             menu.setNameImg(file.getOriginalFilename());
 
@@ -81,11 +81,13 @@
             menuRepository.save(menu);
 
             //        CHECK FOLDER
-            File directory = new File(BASE_FOLDER_PATH + File.separator + IMAGES_FOLDER);
+//            File directory = new File(BASE_FOLDER_PATH + File.separator + IMAGES_FOLDER);
+            File directory = new File(imagesFolder);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
+            String filePath = Paths.get(imagesFolder,relativeFilePath).toString();
             file.transferTo(new File(filePath));
 
     //        throw id menu yang sudah terbuat untuk disimpan ke menu response
