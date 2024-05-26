@@ -58,7 +58,8 @@ public class ImageService {
         Optional<Menu> fileData = menuRepository.findByNameImg(fileName);
 //        GET IMAGE GABUNGAN BASE FOLDER + RELATIVE PATH
         if (fileData.isPresent()) {
-            String relativeFilePath = fileData.get().getFilepath();
+            Menu fileDataGet = fileData.get();
+            String relativeFilePath = fileDataGet.getFilepath();
             String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
             return Files.readAllBytes(new File(filePath).toPath());
         } else {
