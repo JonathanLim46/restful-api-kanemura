@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,16 +56,16 @@ public class ImageService {
 //    GET IMAGE DARI DIRECTORY
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
 //        CARI IMAGE DENGAN NAMA FILE
-        Optional<Menu> fileData = menuRepository.findByNameImg(fileName);
-//        GET IMAGE GABUNGAN BASE FOLDER + RELATIVE PATH
-        if (fileData.isPresent()) {
-            Menu fileDataGet = fileData.get();
-            String relativeFilePath = fileDataGet.getFilepath();
-            String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
-            return Files.readAllBytes(new File(filePath).toPath());
-        } else {
+        List<Menu> fileDataList = menuRepository.findByNameImg(fileName);
+        if(fileDataList.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Gambar tidak ditemukan : " + fileName);
         }
+//        GET IMAGE GABUNGAN BASE FOLDER + RELATIVE PATH
+        Menu fileDataGet = fileDataList.getFirst();
+        String relativeFilePath = fileDataGet.getFilepath();
+        String filePath = BASE_FOLDER_PATH + File.separator + relativeFilePath;
+        return Files.readAllBytes(new File(filePath).toPath());
+
     }
 
 //    GET IMAGE DENGAN ID MENU
