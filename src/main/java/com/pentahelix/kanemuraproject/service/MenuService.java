@@ -49,11 +49,9 @@
         @Autowired
         private ValidationService validationService;
 
-        //    GET BASE FOLDER PATH
-        private final String BASE_FOLDER_PATH = Paths.get("src/main/resources/").toAbsolutePath().toString();
+        private final String BASE_FOLDER_PATH = Paths.get("").toAbsolutePath().toString();
 
-        //    IMAGES DEFAULT FOLDER DI DATABASE
-        private final String IMAGES_FOLDER = "images/";
+        private final String IMAGES_FOLDER = Paths.get(BASE_FOLDER_PATH, "src", "main", "resources", "images").toString();
 
 
     // Create Menu Service
